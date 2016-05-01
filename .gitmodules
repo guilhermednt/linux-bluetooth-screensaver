@@ -1,0 +1,3 @@
+[submodule "solo"]
+	path = solo
+	url = git@github.com:timkay/solo.git
