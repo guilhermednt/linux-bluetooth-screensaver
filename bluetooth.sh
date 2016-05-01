@@ -1,18 +1,9 @@
 #!/bin/bash
 
-DEVICE=B8:D9:CE:D3:E4:99
-DEV_NAME="Alex S3"
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+DEVICE=70:14:A6:0B:B1:2B
+DEV_NAME="null"
 INTERVAL=5 # in seconds
-
-# The xscreensaver PID
-XSS_PID=
-
-# Start xscreensaver if it's not already running
-pgrep xscreensaver
-if [ $? -eq 1 ]; then
-	echo "Starting xscreensaver..."
-	xscreensaver &
-fi
 
 # Assumes you've already paired and trusted the device
 while [ 1 ]; do
@@ -21,7 +12,7 @@ while [ 1 ]; do
 		echo "Device '$opt' found"
 	else
 		echo "Can't find device $DEVICE ($DEV_NAME); locking!"
-		xscreensaver-command -lock
+		$DIR/lock
 	fi
 	sleep $INTERVAL
 done
