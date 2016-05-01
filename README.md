@@ -15,3 +15,8 @@ Lock your linux machine when a given bluetooth device cannot be seen.
 
 3. Run `bluetooth.sh`
 
+## crontab
+
+1. `crontab -e`
+
+2. `* * * * * solo -port=3802 /path/to/bluetooth.sh`
