@@ -5,6 +5,7 @@ LOCAL_DEVICE=DC:53:60:11:50:66
 LOCK_DEVICE=70:14:A6:0B:B1:2B
 DEV_NAME="null"
 INTERVAL=5 # in seconds
+FAIL_LIMIT=3
 
 function checkDevice {
 	enabled=`hcitool dev | grep $LOCAL_DEVICE | wc -l`
@@ -29,18 +30,24 @@ function checkDevice {
 }
 
 # Assumes you've already paired and trusted the device
+FAILS=0
 while [ 1 ]; do
-	 checkDevice
-	 if [ "$checkResult" = "0" ]; then
-	 	echo "Check 1 Failed"
-	 	sleep 1
-	 	checkDevice
-	 	if [ "$checkResult" = "0" ]; then
-	 		echo "Failed 2 tests! Locking!"
-	 		$DIR/lock
-	 	fi
-	 #else
-	 #	echo "OK"
-	 fi
+	checkDevice
+	if [ "$checkResult" = "0" ]; then
+		FAILS=$(expr $FAILS + 1)
+		echo "Failed Checks: $FAILS"
+		if [ "$FAILS" -ge "$FAIL_LIMIT" ]; then
+			echo "Locking!";
+			FAILS=0
+			$DIR/lock
+		else
+			sleep 1
+		fi
+	else
+		if [ "$FAILS" -gt 0 ]; then
+			echo "Recovered"
+		fi
+		FAILS=0
+	fi
 	sleep $INTERVAL
 done
